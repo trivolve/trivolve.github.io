@@ -1,74 +1,54 @@
 ---
 layout: default
-# Default layout
+title: Home
 ---
 
-<!DOCTYPE html>
+<div class="posts">
+  {% for post in paginator.posts %}
+  <div class="post">
+    <h1 class="post-title">
+      <a href="{{ site.baseurl }}{{ post.url }}">
+        {{ post.title }}
+        {% if post.subtitle %}
+        <p class="post-subtitle">
+            {{ post.subtitle }}
+        </p>
+        {% endif %}
+      </a>
+    </h1>
+    <span class="post-date">{{ post.date | date_to_string }}</span>    
+    <div class="post-info">
+      <div class="post-info-detail">
+        <span class="fa-stack fa-sm">
+            <i class="fa fa-tags fa-stack-1x"></i>
+        </span>
+        Tags :{% for tag in post.tags %} <a class="tag-wrapper" href="{{ site.baseurl }}/tags/{{ tag }}" rel="tooltip" title="View posts tagged with &quot;{{ tag }}&quot;"><span class="tags">{{ tag }}</span></a>  {% if forloop.last != true %} {% endif %} {% endfor %}
+        <div class="comment-count">
+          <span class="fa-stack fa-sm">
+              <i class="fa fa-comments fa-stack-1x"></i>
+          </span>
+          <a href="{{ site.baseurl }}{{ post.url }}#disqus_thread" data-disqus-identifier="{{ post.url }}"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
 
-{% include lang.html %}
-
-{% include assets-origin.html %}
-
-{% capture prefer_mode %}
-  {% if site.theme_mode %}
-    data-mode="{{ site.theme_mode }}"
+<div class="pagination">
+  {% if paginator.next_page %}
+    <a class="pagination-item older" href="{{ site.baseurl }}/page{{paginator.next_page}}">Older Posts</a>
+  {% else %}
+    <span class="pagination-item older">Older Posts</span>
   {% endif %}
-{% endcapture %}
-
-<html lang="{{ site.lang }}"{{ prefer_mode }}>
-
-  {% include head.html %}
-
-  <body data-spy="scroll" data-target="#toc" data-topbar-visible="true">
-
-    {% include sidebar.html %}
-
-    {% include topbar.html %}
-
-    <div id="main-wrapper" class="d-flex justify-content-center">
-      <div id="main" class="container pl-xl-4 pr-xl-4">
-
-        {{ content }}
-
-        {% include footer.html %}
-
-      </div>
-
-      {% include search-results.html %}
-
-    </div> <!-- #main-wrapper -->
-
-    {% if page.mermaid %}
-      {% include mermaid.html %}
+  
+  {% if paginator.previous_page %}
+    {% if paginator.page == 2 %}
+      <a class="pagination-item newer" href="{{ site.baseurl }}/">Newer Posts</a>
+    {% else %}
+      <a class="pagination-item newer" href="{{ site.baseurl }}/page{{paginator.previous_page}}">Newer Posts</a>
     {% endif %}
-
-    <div id="mask"></div>
-
-    <a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button">
-      <i class="fas fa-angle-up"></i>
-    </a>
-
-    {% if site.pwa.enabled %}
-      <div id="notification" class="toast" role="alert" aria-live="assertive" aria-atomic="true"
-        data-animation="true" data-autohide="false">
-        <div class="toast-header">
-          <button type="button" class="ml-2 ml-auto close" data-dismiss="toast" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="toast-body text-center pt-0">
-          <p class="pl-2 pr-2 mb-3">{{ site.data.locales[lang].notification.update_found }}</p>
-          <button type="button" class="btn btn-primary" aria-label="Update">
-            {{ site.data.locales[lang].notification.update }}
-          </button>
-        </div>
-      </div>
-    {% endif %}
-
-    {% include search-loader.html %}
-
-    {% include js-selector.html %}
-
-  </body>
-
-</html>
+  {% else %}
+    <span class="pagination-item newer">Newer Posts</span>
+  {% endif %}
+</div>
